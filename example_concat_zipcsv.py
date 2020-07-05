@@ -2,14 +2,14 @@
 import pandas as pd
 import zipfile
 
-def openByDate(zipfpath, statedate, enddate):
+def openByDate(zipfpath, startdate, enddate):
     '''
     open zip and read files within the range of the starting date and ending date
     preferable, controllable
     '''
     dfs = []
     with zipfile.ZipFile(zipfpath) as z:     #   z.infolist()
-        filenames = [f.filename f in z.infolist()]
+        filenames = [f.filename for f in z.infolist()]
         for d in pd.date_range(startdate, enddate, freq='D'):
             toOpen = 'Rulo_5SW/Rulo_5SW_soil_{:%Y%m%d}_0703.csv'.format(d)
             if toOpen in filenames:
@@ -39,3 +39,9 @@ def openAllExisting(zipfpath):
                     agl.append(df)
 
     return pd.concat(agl).reset_index(drop=True), pd.concat(soil).reset_index(drop=True)
+
+
+soil = openByDate('F:/Downloads/Compressed/Rulo_5SW.zip', '2019-06-19', '2020-06-30')
+
+
+agl, soil2 = openAllExisting('F:/Downloads/Compressed/Rulo_5SW.zip')
